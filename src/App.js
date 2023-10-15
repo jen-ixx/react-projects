@@ -1,31 +1,26 @@
 import React from 'react'
 import { Route, Routes } from 'react-router'
 import RootLayOut from './components/RootLayOut'
-import Notfound from './pages/NotFound'
-import Homepage from './pages/Homepage'
-import * as Gi from './pages/sample';
-
+import NotFound from './pages/NotFound'
+import HomePage from './pages/HomePage'
+import Crud from './components/Crud'
+import UpdateCrud from './components/UpdateCrud'
 
 
 const App = () => {
 
-
-  console.log(Gi.d);
-
   return (
-
-
     <Routes>
-
       <Route path='/' element={<RootLayOut />} >
+        <Route index element={<HomePage />} />
+        <Route path='add-some' element={<Crud />} />
+        <Route path='update-some/:id' element={<UpdateCrud />} />
 
-        <Route index element={<Homepage />} />
-
-        <Route path='*' element={<Notfound />} />
+        <Route path='*' element={<NotFound />} />
 
       </Route>
 
-    </Routes >
+    </Routes>
   )
 }
 

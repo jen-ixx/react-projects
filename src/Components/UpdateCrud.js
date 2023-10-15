@@ -11,10 +11,10 @@ import {
 } from "@material-tailwind/react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { addTodo } from '../Features/todoslice';
-import { useNavigate } from 'react-router';
-import { nanoid } from '@reduxjs/toolkit';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router';
+import { updateTodo } from '../Features/todoslice';
+
 
 const radioData = [
   { label: 'Male', value: 'male' },
@@ -31,7 +31,12 @@ const checkData = [
 
 
 
-const Crud = () => {
+const UpdateCrud = () => {
+
+  const { id } = useParams();
+  const { todos } = useSelector((store) => store.todo);
+  const todo = todos.find((todo) => todo.id === id);
+
 
   const dispatch = useDispatch();
   const nav = useNavigate();
@@ -61,18 +66,18 @@ const Crud = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: '',
-      email: '',
-      gender: '',
-      habits: [],
-      country: '',
-      msg: '',
+      username: todo?.username,
+      email: todo?.email,
+      gender: todo?.gender,
+      habits: todo?.habits,
+      country: todo?.country,
+      msg: todo?.msg,
       // imageFile: null,
-      imageReview: '',
-      id: nanoid()
+      imageReview: todo?.imageReview,
+      id: todo?.id
     },
     onSubmit: (val) => {
-      dispatch(addTodo(val));
+      dispatch(updateTodo(val));
       nav(-1);
     },
     validationSchema: crudSchema
@@ -107,6 +112,7 @@ const Crud = () => {
             <div className="flex gap-6">
               {radioData.map((radio, i) => {
                 return <Radio
+                  checked={radio.value === formik.values.gender ? true : false}
                   onChange={formik.handleChange}
                   key={i} name="gender" label={radio.label} value={radio.value} />;
               })}
@@ -124,6 +130,7 @@ const Crud = () => {
 
               {checkData.map((check, i) => {
                 return <Checkbox
+                  checked={formik.values.habits.includes(check.value) ? true : false}
                   onChange={formik.handleChange}
                   key={i} name="habits" label={check.label} value={check.value} />;
               })}
@@ -135,9 +142,11 @@ const Crud = () => {
 
           <div className='space-y-3'>
             <p>Select Your Country</p>
-            <Select onChange={(e) => {
-              formik.setFieldValue('country', e);
-            }} label="Select Version">
+            <Select
+              value={formik.values.country}
+              onChange={(e) => {
+                formik.setFieldValue('country', e);
+              }} label="Select Version">
               <Option value='Nepal'>Nepal</Option>
               <Option value='India'>India</Option>
               <Option value='China'>China</Option>
@@ -155,7 +164,7 @@ const Crud = () => {
           </div>
 
           <div className='space-y-3'>
-            <p>Select Your Image</p>
+            <p>Change Image</p>
             <Input
               name='imageFile'
               onChange={(e) => {
@@ -191,4 +200,4 @@ const Crud = () => {
   )
 }
 
-export default Crud
+export default UpdateCrud
