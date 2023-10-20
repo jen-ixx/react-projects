@@ -1,10 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { movieApi } from "./movieApi";
 
-import todoReducer from './todoslice'
 
 
 export const store = configureStore({
   reducer: {
-    todo: todoReducer
-  }
+    [movieApi.reducerPath]: movieApi.reducer,
+
+  },
+  middleware: (getDefaultMiddleWare) => getDefaultMiddleWare().concat([
+    movieApi.middleware
+  ])
 });
